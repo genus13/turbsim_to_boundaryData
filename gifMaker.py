@@ -8,7 +8,10 @@ import imageio
 import os
 from natsort import natsorted
 
-in_path = 'temp/'
+if not os.path.exists("results"):
+    os.makedirs("results")
+
+in_path = 'temp1/'
 out_filename="animation"
 out_path="results/"
 in_filenames = natsorted(os.listdir(in_path))
