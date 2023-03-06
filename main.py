@@ -11,8 +11,8 @@ from neutralABLfunctions import neutralABL
 from addLineIFeven import interpCenter
 
 ### Choose Operations ###
-TIME_SAMPLING = 1                       # useful for check/dev
-SHOW_TURBSIM_DATA = 1                   # also gif creation works in "temp1" folder
+TIME_SAMPLING = 0                       # useful for check/dev
+SHOW_TURBSIM_DATA = 0                   # also gif creation works in "temp1" folder
 CREATE_boundaryData = 1
 PERIODIC = 1                            # create an extension of inflow in the y-direction (doubling y length)
                                         # by flipping/mirroring the original field
@@ -154,21 +154,21 @@ if CREATE_boundaryData == 1:
                     WW[j, 1:NlogLawInterpolationPoints_W] = wL
 
             ''' decomment fo checking added layers (limited in the same height range of turbsim) '''
-            if not os.path.exists("temp2"):
-                os.makedirs("temp2")
-            XX = UU[:,NlogLawInterpolationPoints_W:NlogLawInterpolationPoints_W+NzPoints]
-            YY = VV[:,NlogLawInterpolationPoints_W:NlogLawInterpolationPoints_W+NzPoints]
-            ZZ = WW[:,NlogLawInterpolationPoints_W:NlogLawInterpolationPoints_W+NzPoints]
-            uMag_add = np.sqrt(XX**2+YY**2+ZZ**2)
-            y = ts['y']
-            z = Z[NlogLawInterpolationPoints_W:NlogLawInterpolationPoints_W+NzPoints]
-            zz, yy = np.meshgrid(z, y)
-            c = plt.contourf(yy, zz, uMag_add, resol, vmin=vmin, vmax=vmax)
-            plt.xlabel("Y")
-            plt.ylabel("Z")
-            plt.colorbar(ScalarMappable(norm=c.norm, cmap=c.cmap), ticks=range(vmin, vmax, 1))
-            plt.savefig('temp2/addedLayers_Umag_contour_t' + str(ts['t'][t]) + '.png',dpi=dpi)
-            plt.clf()
+            # if not os.path.exists("temp2"):
+            #     os.makedirs("temp2")
+            # XX = UU[:,NlogLawInterpolationPoints_W:NlogLawInterpolationPoints_W+NzPoints]
+            # YY = VV[:,NlogLawInterpolationPoints_W:NlogLawInterpolationPoints_W+NzPoints]
+            # ZZ = WW[:,NlogLawInterpolationPoints_W:NlogLawInterpolationPoints_W+NzPoints]
+            # uMag_add = np.sqrt(XX**2+YY**2+ZZ**2)
+            # y = ts['y']
+            # z = Z[NlogLawInterpolationPoints_W:NlogLawInterpolationPoints_W+NzPoints]
+            # zz, yy = np.meshgrid(z, y)
+            # c = plt.contourf(yy, zz, uMag_add, resol, vmin=vmin, vmax=vmax)
+            # plt.xlabel("Y")
+            # plt.ylabel("Z")
+            # plt.colorbar(ScalarMappable(norm=c.norm, cmap=c.cmap), ticks=range(vmin, vmax, 1))
+            # plt.savefig('temp2/addedLayers_Umag_contour_t' + str(ts['t'][t]) + '.png',dpi=dpi)
+            # plt.clf()
 
             # mirroring/flipping for periodic conditions on y-dir (periodic direction)
             if PERIODIC == 1:
