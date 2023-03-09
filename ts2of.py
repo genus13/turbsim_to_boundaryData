@@ -57,6 +57,7 @@ NzPoints = len(ts['z'])
 time = ts['t']
 deltaY = abs(ts['y'][0] - ts['y'][1])
 Y = ts['y']
+Ntime = len(ts['t'])
 #_______________________________________CREATE_boundaryData_FOR_OF______________________________________________________
 if CREATE_boundaryData == 1:
 
