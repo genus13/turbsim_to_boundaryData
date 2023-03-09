@@ -22,6 +22,7 @@ xPatch = 0                            	# coordinate of the inflow patch
 folder_name = 'constant/boundaryData'  	# boundaryData folder path
 
 z_ref = 150			                    # [m] zHub
+zHub = z_ref
 u_ref = 7.5				                # [m/s] velocity at hub
 dt = 0.5				                # [s] time step of the series
 MOlength = 41.8                         # [m] TO CHECK #################################################################
@@ -244,6 +245,6 @@ for patch in boundaryNames:
     fid_0.write('(\n')
     for i in range(0, len(Y)):
         for j in range(0, len(Z)):
-            fid_0.write(f'({xPatch:.15f} {Y[i]:.15f} {Z[j]:.15f})\n')
+            fid_0.write(f'({xPatch:.15f} {Y[i]:.15f} {Z[j]-zHub:.15f})\n')
     fid_0.write(')\n')
     fid_0.write('// ************************************************************************* //')
