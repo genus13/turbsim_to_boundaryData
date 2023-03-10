@@ -226,9 +226,9 @@ for patch in boundaryNames:
         for i in range(0, len(Y)):
             for j in range(0, len(Z)):
                 fid_U.write(f'({UU[i, j]:.15f} {VV[i, j]:.15f} {WW[i, j]:.15f})\n')
-                fid_k.write(f'({KE[i, j]:.15f})\n')
-                fid_eps.write(f'({EPS[i, j]:.15f})\n')
-                fid_omega.write(f'({OMEGA[i, j]:.15f})\n')
+                fid_k.write(f'{KE[i, j]:.15f}\n')
+                fid_eps.write(f'{EPS[i, j]:.15f}\n')
+                fid_omega.write(f'{OMEGA[i, j]:.15f}\n')
 
         # closing
         fid_U.write(')\n')
