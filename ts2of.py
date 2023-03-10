@@ -13,12 +13,12 @@ PERIODIC = 1                            # create an extension of inflow in the y
                                         # by flipping/mirroring the original field
 FLIP_of_FLIP = 1                        # quadrupled y length
 ### Mod ###
-turb_sim_path = 'data/TurbSimDispari.bts'
+turb_sim_path = 'TurbSim.bts'
 # turb_sim_path = 'data/TurbSim.bts'
 NlogLawInterpolationPoints_W = 5      	# number of layers to add near wall
 NlogLawInterpolationPoints_H = 5      	# number of layers to add in the upper part
-boundaryNames = ['Inlet']
-xPatch = 0                            	# coordinate of the inflow patch
+boundaryNames = ['Inlet','Outlet']
+xPatch = [-960, 3840]                   # x-coordinate of the patches
 folder_name = 'constant/boundaryData'  	# boundaryData folder path
 
 z_ref = 150			                    # [m] zHub
@@ -57,7 +57,6 @@ time = ts['t']
 deltaY = abs(ts['y'][0] - ts['y'][1])
 Y = ts['y']
 Ntime = len(ts['t'])
-Ntime = 5
 #_______________________________________CREATE_boundaryData_FOR_OF______________________________________________________
 ### create boundaryData directory ###
 folder_path = os.path.join(os.getcwd(), folder_name)    # Define the path to the folder
@@ -85,6 +84,7 @@ Z = np.concatenate((z_W[0:-1],z,z_H))
 Z = np.insert(Z,0,0)    # first element is 0
 
 ### start filling boundaryData folder ###
+count=0
 for patch in boundaryNames:
     if not os.path.exists(folder_path+'/'+patch):
         os.makedirs(folder_path+'/'+patch)
@@ -137,7 +137,7 @@ for patch in boundaryNames:
         # mirroring/flipping for periodic conditions on y-dir (periodic direction)
         if PERIODIC == 1:
             if NyPoints % 2 == 0:   # if NyPoints are odd interpolate for the central value and place at y-lim
-                if t==0:
+                if t==0 and count==0:
                     print('||||| Points in y-dir are even: interpolated values in y extremities! |||||\n')
                     Y = np.insert(Y, len(Y) // 2, 0.0)
                     added_y_pos = np.arange(0,len(Y)//2)*deltaY+Y[-1]+deltaY
@@ -166,7 +166,7 @@ for patch in boundaryNames:
                                             np.flip(OMEGA[int(NyPoints / 2):NyPoints], axis=0)))
 
             else:
-                if t == 0:
+                if t == 0 and count==0:
                     print('||||| Points in y-dir are odd: same values in y extremities! |||||\n')
                     added_y_pos = np.arange(0, len(Y) // 2) * deltaY + Y[-1] + deltaY
                     added_y_neg = added_y_pos * -1
@@ -185,7 +185,7 @@ for patch in boundaryNames:
                 OMEGA = np.concatenate((np.flip(OMEGA[1:NyPoints // 2], axis=0), OMEGA,
                                      np.flip(OMEGA[NyPoints // 2 - 1:NyPoints - 1], axis=0)))
         if FLIP_of_FLIP == 1:
-            if t==0:
+            if t==0 and count==0:
                 added_y_pos = np.arange(0, len(Y) // 2) * deltaY + Y[-1] + deltaY
                 added_y_neg = added_y_pos * -1
                 added_y_neg = added_y_neg[::-1]
@@ -241,10 +241,11 @@ for patch in boundaryNames:
     # creating 'points' file
     fid_0 = open(folder_path + '/' + patch + '/' + 'points', "w")
     fid_0.write('// Points \n')
-    fid_0.write(f'{len(Z)*len(Z)} \n')
+    fid_0.write(f'{len(Y)*len(Z)} \n')
     fid_0.write('(\n')
     for i in range(0, len(Y)):
         for j in range(0, len(Z)):
-            fid_0.write(f'({xPatch:.15f} {Y[i]:.15f} {Z[j]-zHub:.15f})\n')
+            fid_0.write(f'({xPatch[count]:.15f} {Y[i]:.15f} {Z[j]-zHub:.15f})\n')
     fid_0.write(')\n')
     fid_0.write('// ************************************************************************* //')
+    count=count+1 
