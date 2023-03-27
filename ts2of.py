@@ -25,6 +25,8 @@ z_ref = 150			                    # [m] zHub
 zHub = z_ref
 u_ref = 7.5				                # [m/s] velocity at hub
 dt = 0.5				                # [s] time step of the series
+TI = 7                                  # [%] turbulence intensity
+ke_thrsh = 1e-3                        # kinetic energy threshold
 MOlength = 41.8                         # [m] TO CHECK #################################################################
 PBLH = 1000                             # [m] Planetary Boundary Layer Height
 z0 = 0.0005                             # [m] roughness
@@ -114,9 +116,23 @@ for patch in boundaryNames:
             UU[j, NzPoints + NlogLawInterpolationPoints_W:end] = u[NzPoints + NlogLawInterpolationPoints_W:end]
             VV[j, NzPoints + NlogLawInterpolationPoints_W:end] = 0
             WW[j, NzPoints + NlogLawInterpolationPoints_W:end] = 0
-            KE[j,0:end] = k
             EPS[j, 0:end] = eps
             OMEGA[j, 0:end] = omega
+
+            ### TKE modelling ###
+            # TKE upper layers
+            # KE[j, NzPoints + NlogLawInterpolationPoints_W:end] = k[NzPoints + NlogLawInterpolationPoints_W:end]
+            KE[j, NzPoints + NlogLawInterpolationPoints_W:end] = ke_thrsh
+            # TKE wall layers
+            KE[j, 0:NlogLawInterpolationPoints_W] = k[0:NlogLawInterpolationPoints_W]
+            # TKE for turbsim layers
+            z_log = Z[NlogLawInterpolationPoints_W:NzPoints+NlogLawInterpolationPoints_W]
+            kRANS = k[NlogLawInterpolationPoints_W:NzPoints+NlogLawInterpolationPoints_W]
+            U_log = u_ref * np.log(z_log/z0)/np.log(z_ref/z0)
+            k_resolved = 2/3 * (TI/100 * U_log)**2
+            KE[j, NlogLawInterpolationPoints_W:NzPoints+NlogLawInterpolationPoints_W] = kRANS - k_resolved
+            # TKE threshold
+            KE[KE <= ke_thrsh] = ke_thrsh
 
             # create cosDirs of the first turbsim layer (used for modelling u in wall layers)
             uMag_first_ts_layer = np.sqrt(ts['u'][0,t,j,0]**2+ts['u'][1,t,j,0]**2+ts['u'][2,t,j,0]**2)
@@ -248,4 +264,4 @@ for patch in boundaryNames:
             fid_0.write(f'({xPatch[count]:.15f} {Y[i]:.15f} {Z[j]-zHub:.15f})\n')
     fid_0.write(')\n')
     fid_0.write('// ************************************************************************* //')
-    count=count+1 
+    count=count+1
