@@ -1,0 +1,6 @@
+La v5 modella gli ultimi strati del boundary layer utilizzando la velocità locale 
+(quindi variabile lungo la direzione ciclica y) dando vita all'effetto di striatura
+che si vede sul campo.
+
+La v6 modella gli stessi strati utilizzato la velocità e la quota di riferimento di
+turbSim in modo tale che il campo sia più omogeneo.
