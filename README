@@ -4,3 +4,7 @@ che si vede sul campo.
 
 La v6 modella gli stessi strati utilizzato la velocità e la quota di riferimento di
 turbSim in modo tale che il campo sia più omogeneo.
+
+La v7 non effettua un mirroring ma semplicemente trasla la griglia di base di turbsim
+a dx e sx, triplicando le dimensioni della griglia di base. Gli estremi sono
+modellati per mantere la periodicità delle patch laterali.
